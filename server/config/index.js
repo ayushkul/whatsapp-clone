@@ -9,5 +9,6 @@ module.exports = function (app) {
     app.use(bodyParser.json())
     // compression of data
     app.use(compression(9))
+    // CORS
     app.use(cors())
 }
