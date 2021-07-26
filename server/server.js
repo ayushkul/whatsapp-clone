@@ -1,23 +1,20 @@
-import APP from 'express'
-import DBConnection from './config/dbConnection'
-import Utils from './app/utils'
-import Config from './config'
-import routes from './routes'
-import { httpConstants } from './app/common/constants'
+import APP from "express";
+import connectDB from "./dbConnection";
+import routes from "./routes";
 
-const app = new APP()
-require('./config/express')(app)
-global.lhtWebLog = Utils.lhtLog
+const app = new APP();
+require("./config")(app);
 
-class Server {
-  static listen () {
-    Promise.all([DBConnection.connect()]).then(() => {
-      app.listen(Config.PORT)
-      Utils.lhtLog('listen', `Server Started on port ${Config.PORT}`, {}, 'AyushK', httpConstants.LOG_LEVEL_TYPE.INFO)
-      routes(app)
-      require('./config/jobInitializer')
-    }).catch(error => Utils.lhtLog('listen', 'failed to connect', { err: error }, 'AyushK', httpConstants.LOG_LEVEL_TYPE.ERROR))
-  }
-}
+const PORT = 3001;
 
-Server.listen()
+const startServer = () => {
+  Promise.all([connectDB()])
+    .then(() => {
+      app.listen(PORT);
+      console.log(`Server started on Port ${PORT}`);
+      routes(app);
+    })
+    .catch((error) => console.error(`Unable to start the server`, error));
+};
+
+startServer();

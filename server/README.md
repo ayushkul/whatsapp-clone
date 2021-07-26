@@ -1,10 +1,9 @@
-# node-microservice-template #
+# WhatsApp Clone Backend - The Indian Dev
 
 ### What is this repository for? ###
 
-* Microservice template for quick start
+* Whatsapp Clone's Backend with Express and NodeJS
 * Version 1.0
-* [Bitbucket Repository](https://bitbucket.org/leewayhertz/node-microservice-template)
 
 ### How do I get set up? ###
 
@@ -19,7 +18,6 @@
 
 * Writing tests
 * Code review
-* Other guidelines
 
 ### Who do I talk to? ###
 

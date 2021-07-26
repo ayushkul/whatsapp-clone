@@ -5,13 +5,14 @@
 ### Demo - Deployed over Github Pages 
 https://ayushkul.github.io/whatsapp-clone
 
-### Full development Tutorial 
-[Youtube Tutorial - The Indian Dev](https://www.youtube.com/watch?v=_UXycMmVYj0)
+### Development Tutorial 
+* [Frontend - Youtube Tutorial](https://youtu.be/UBFs84OQrko)
 
-### Libraries used
-* `styled-components`
-* `axios`
-* `react-scripts`
+#### Frontend Readme File - 
+[ayushkul/whatsapp-clone/client](https://github.com/ayushkul/whatsapp-clone/tree/main/client/README.md)
+
+#### Backend Readme File
+[ayushkul/whatsapp-clone/server](https://github.com/ayushkul/whatsapp-clone/tree/main/server/README.md)
 
 ### Whom do I talk to? ###
 
