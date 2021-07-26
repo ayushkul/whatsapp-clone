@@ -124,7 +124,7 @@ function ConversationComponent(props) {
             />
           )}
           <EmojiImage
-            src={"/data.svg"}
+            src={"/whatsapp-clone/data.svg"}
             onClick={() => togglePicker((pickerVisible) => !pickerVisible)}
           />
           <SearchInput

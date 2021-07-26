@@ -41,7 +41,7 @@ function App() {
         <ConversationComponent selectedChat={selectedChat} />
       ) : (
         <Placeholder>
-          <ChatPlaceholder src="/welcome-placeholder.jpeg" />
+          <ChatPlaceholder src="/whatsapp-clone/welcome-placeholder.jpeg" />
           <span>Keep your phone connected</span>
           WhatsApp connects to your phone to sync messages.
         </Placeholder>

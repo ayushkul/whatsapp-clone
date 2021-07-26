@@ -115,11 +115,11 @@ function ContactListComponent(props) {
   return (
     <Container>
       <ProfileInfoDiv>
-        <ProfileImage src={"/profile/theindiandev.jpeg"} />
+        <ProfileImage src={"/whatsapp-clone/profile/theindiandev.jpeg"} />
       </ProfileInfoDiv>
       <SearchBox>
         <SearchContainer>
-          <SearchIcon src={"/search-icon.svg"} />
+          <SearchIcon src={"/whatsapp-clone/search-icon.svg"} />
           <SearchInput placeholder="Search or start new chat" />
         </SearchContainer>
       </SearchBox>
