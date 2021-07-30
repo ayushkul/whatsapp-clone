@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const DB_CONNECTION_URL = ``;
+const DB_CONNECTION_URL = `mongodb+srv://whatsappclone:yqVF0kialZqsXA30@localdb.3dk81.mongodb.net/whatsapp-clone?retryWrites=true&w=majority`;
 
 const connectDB = () => {
   console.log("DB trying to connect on " + new Date());
