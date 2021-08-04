@@ -45,7 +45,7 @@ module.exports = {
     const requestData = req.body;
     await ChannelModel.findOneAndUpdateData(
       { _id: requestData.channelId },
-      { $push: { messages: requestData.message } },
+      { $push: { messages: requestData.messages } },
     );
     sendResponse(res, {}, "Message sent successfully", true, 200);
   },
