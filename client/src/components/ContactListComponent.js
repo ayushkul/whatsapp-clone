@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { contactList } from "../mockData";
+import {contactList} from "../mockData";
 
 const Container = styled.div`
   display: flex;
@@ -99,35 +99,37 @@ const ProfileIcon = styled(ProfileImage)`
   object-fit: cover;
 `;
 const ContactComponent = (props) => {
-  const { userData, setChat } = props;
-  return (
-    <ContactItem onClick={() => setChat(userData)}>
-      <ProfileIcon src={userData.profilePic} />
-      <ContactInfo>
-        <ContactName>{userData?.name}</ContactName>
-        <MessageText>{userData?.lastText}</MessageText>
-      </ContactInfo>
-      <MessageTime> {userData?.lastTextTime}</MessageTime>
-    </ContactItem>
-  );
+    const {userData, setChat} = props;
+    return (
+        <ContactItem onClick={() => setChat(userData)}>
+            <ProfileIcon src={userData.profilePic}/>
+            <ContactInfo>
+                <ContactName>{userData?.name}</ContactName>
+                <MessageText>{userData?.lastText}</MessageText>
+            </ContactInfo>
+            <MessageTime> {userData?.lastTextTime}</MessageTime>
+        </ContactItem>
+    );
 };
+
 function ContactListComponent(props) {
-  return (
-    <Container>
-      <ProfileInfoDiv>
-        <ProfileImage src={"/whatsapp-clone/profile/theindiandev.jpeg"} />
-      </ProfileInfoDiv>
-      <SearchBox>
-        <SearchContainer>
-          <SearchIcon src={"/whatsapp-clone/search-icon.svg"} />
-          <SearchInput placeholder="Search or start new chat" />
-        </SearchContainer>
-      </SearchBox>
-      {contactList.map((userData) => (
-        <ContactComponent userData={userData} setChat={props.setChat} />
-      ))}
-    </Container>
-  );
+    const {imageUrl} = props
+    return (
+        <Container>
+            <ProfileInfoDiv>
+                <ProfileImage src={imageUrl || "/whatsapp-clone/profile/theindiandev.jpeg"}/>
+            </ProfileInfoDiv>
+            <SearchBox>
+                <SearchContainer>
+                    <SearchIcon src={"/whatsapp-clone/search-icon.svg"}/>
+                    <SearchInput placeholder="Search or start new chat"/>
+                </SearchContainer>
+            </SearchBox>
+            {contactList.map((userData) => (
+                <ContactComponent userData={userData} setChat={props.setChat}/>
+            ))}
+        </Container>
+    );
 }
 
 export default ContactListComponent;
