@@ -1,7 +1,9 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import {GoogleLogin} from 'react-google-login';
+import { GoogleLogin } from "react-google-login";
 import App from "../../App";
+import cookieManager from "../../managers/cookieManager";
+import httpManager from "../../managers/httpManager";
 
 const Container = styled.div`
   display: flex;
@@ -58,38 +60,53 @@ const QRCode = styled.img`
 `;
 
 const LoginComponent = () => {
-    const [userInfo, setUserInfo] = useState()
-    const responseGoogle = (response) => {
-        setUserInfo(response.profileObj)
-        console.log(response.profileObj);
-    }
-    return (
-        <>
-            {
-                userInfo ? <App userInfo={userInfo}/> :
-                    <Container>
-                        <Header>WHATSAPP WEB CLONE</Header>
-                        <CardView>
-                            <Instructions>
-                                <Heading>To use WhatsApp on your computer:</Heading>
-                                <ol>
-                                    <li>You need to Signin using your Google Account.</li>
-                                    <li>You can anytime logout from the Web.</li>
-                                    <li>Click on Signin button to continue using the Whatsapp Clone.</li>
-                                </ol>
-                                <GoogleLogin
-                                    clientId="412954107899-68euuaorrd8rvs138sa74g0fhudesc2f.apps.googleusercontent.com"
-                                    buttonText="Sign In with Google"
-                                    cookiePolicy={'single_host_origin'}
-                                    onSuccess={responseGoogle}
-                                    onFailure={responseGoogle}
-                                />
-                            </Instructions>
-                            <QRCode src="whatsapp-clone/qr-placeholder.png"/>
-                        </CardView>
-                    </Container>
-            }
-        </>
-    )
-}
+  const [userInfo, setUserInfo] = useState();
+
+  useEffect(() => {
+    const userData = cookieManager.getUserInfo();
+    if (userData) setUserInfo(userData);
+  }, []);
+
+  const responseGoogle = async (response) => {
+    await httpManager.createUser({
+      email: response.profileObj.email,
+      name: response.profileObj.name,
+      profilePic: response.profileObj.imageUrl,
+    });
+    setUserInfo(response.profileObj);
+    cookieManager.setUserInfo(response.profileObj);
+  };
+
+  return (
+    <>
+      {userInfo ? (
+        <App userInfo={userInfo} />
+      ) : (
+        <Container>
+          <Header>WHATSAPP WEB CLONE</Header>
+          <CardView>
+            <Instructions>
+              <Heading>To use WhatsApp on your computer:</Heading>
+              <ol>
+                <li>You need to Signin using your Google Account.</li>
+                <li>You can anytime logout from the Web.</li>
+                <li>
+                  Click on Signin button to continue using the Whatsapp Clone.
+                </li>
+              </ol>
+              <GoogleLogin
+                clientId="412954107899-68euuaorrd8rvs138sa74g0fhudesc2f.apps.googleusercontent.com"
+                buttonText="Sign In with Google"
+                cookiePolicy={"single_host_origin"}
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+              />
+            </Instructions>
+            <QRCode src="whatsapp-clone/qr-placeholder.png" />
+          </CardView>
+        </Container>
+      )}
+    </>
+  );
+};
 export default LoginComponent;

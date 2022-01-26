@@ -3,16 +3,16 @@ const mongoose = require("mongoose");
 const channelSchema = new mongoose.Schema({
   channelUsers: [
     {
-      _id: { type: String, default: "" },
+      email: { type: String, default: "" },
       name: { type: String, default: "" },
       profilePic: { type: String, default: "" },
     },
   ],
   messages: [
     {
-      senderID: { type: String, default: "" },
+      senderEmail: { type: String, default: "" },
       messageType: { type: String, default: "TEXT" },
-      message: { type: String, default: "" },
+      text: { type: String, default: "" },
       addedOn: { type: Number, default: Date.now() },
     },
   ],

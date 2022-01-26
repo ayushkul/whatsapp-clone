@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import ContactListComponent from "./components/ContactListComponent";
 import ConversationComponent from "./components/ConversationComponent";
@@ -35,22 +35,34 @@ const Placeholder = styled.div`
 `;
 
 function App(props) {
-    const {userInfo} = props
-    const [selectedChat, setChat] = useState();
-    return (
-        <Container>
-            <ContactListComponent setChat={setChat} imageUrl={userInfo.imageUrl}/>
-            {selectedChat ? (
-                <ConversationComponent selectedChat={selectedChat}/>
-            ) : (
-                <Placeholder>
-                    <ChatPlaceholder src="/whatsapp-clone/welcome-placeholder.jpeg"/>
-                    <span>Keep your phone connected</span>
-                    WhatsApp connects to your phone to sync messages.
-                </Placeholder>
-            )}
-        </Container>
-    );
+  const { userInfo } = props;
+  const [selectedChat, setChat] = useState();
+  const [refreshContactList, toggleRefreshContactList] = useState(false);
+
+  return (
+    <Container>
+      <ContactListComponent
+        setChat={setChat}
+        userInfo={userInfo}
+        refreshContactList={refreshContactList}
+      />
+      {selectedChat ? (
+        <ConversationComponent
+          selectedChat={selectedChat}
+          userInfo={userInfo}
+          refreshContactList={() =>
+            toggleRefreshContactList(!refreshContactList)
+          }
+        />
+      ) : (
+        <Placeholder>
+          <ChatPlaceholder src="/whatsapp-clone/welcome-placeholder.jpeg" />
+          <span>Keep your phone connected</span>
+          WhatsApp connects to your phone to sync messages.
+        </Placeholder>
+      )}
+    </Container>
+  );
 }
 
 export default App;

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { SearchContainer, SearchInput } from "./ContactListComponent";
 import Picker from "emoji-picker-react";
 import { messagesList } from "../mockData";
+import httpManager from "../managers/httpManager";
 
 const Container = styled.div`
   display: flex;
@@ -75,21 +76,48 @@ const EmojiImage = styled.img`
   cursor: pointer;
 `;
 function ConversationComponent(props) {
-  const { selectedChat } = props;
+  const { selectedChat, userInfo, refreshContactList } = props;
   const [text, setText] = useState("");
   const [pickerVisible, togglePicker] = useState(false);
-  const [messageList, setMessageList] = useState(messagesList);
+  const [messageList, setMessageList] = useState([]);
 
-  const onEnterPress = (event) => {
+  useEffect(() => {
+    setMessageList(selectedChat.channelData.messages);
+  }, [selectedChat]);
+
+  const onEnterPress = async (event) => {
+    let channelId = selectedChat.channelData._id;
     if (event.key === "Enter") {
+      if (!messageList || !messageList.length) {
+        const channelUsers = [
+          {
+            email: userInfo.email,
+            name: userInfo.name,
+            profilePic: userInfo.imageUrl,
+          },
+          {
+            email: selectedChat.otherUser.email,
+            name: selectedChat.otherUser.name,
+            profilePic: selectedChat.otherUser.profilePic,
+          },
+        ];
+        const channelResponse = await httpManager.createChannel({
+          channelUsers,
+        });
+        channelId = channelResponse.data.responseData._id;
+      }
+      refreshContactList();
       const messages = [...messageList];
-      messages.push({
-        id: 0,
-        messageType: "TEXT",
+      const msgReqData = {
         text,
-        senderID: 0,
-        addedOn: "12:02 PM",
+        senderEmail: userInfo.email,
+        addedOn: new Date().getTime(),
+      };
+      const messageResponse = await httpManager.sendMessage({
+        channelId,
+        messages: msgReqData,
       });
+      messages.push(msgReqData);
       setMessageList(messages);
       setText("");
     }
@@ -98,14 +126,14 @@ function ConversationComponent(props) {
     <Container>
       <ProfileHeader>
         <ProfileInfo>
-          <ProfileImage src={selectedChat.profilePic} />
-          <ContactName>{selectedChat.name}</ContactName>
+          <ProfileImage src={selectedChat.otherUser.profilePic} />
+          <ContactName>{selectedChat.otherUser.name}</ContactName>
         </ProfileInfo>
       </ProfileHeader>
       <MessageContainer>
-        {messageList.map((messageData) => (
-          <MessageDiv isYours={messageData.senderID === 0}>
-            <Message isYours={messageData.senderID === 0}>
+        {messageList?.map((messageData) => (
+          <MessageDiv isYours={messageData.senderEmail === userInfo.email}>
+            <Message isYours={messageData.senderEmail === userInfo.email}>
               {[messageData.text]}
             </Message>
           </MessageDiv>
@@ -118,8 +146,8 @@ function ConversationComponent(props) {
             <Picker
               pickerStyle={{ position: "absolute", bottom: "60px" }}
               onEmojiClick={(e, emoji) => {
-                  setText(text + emoji.emoji)
-                  togglePicker(false)
+                setText(text + emoji.emoji);
+                togglePicker(false);
               }}
             />
           )}

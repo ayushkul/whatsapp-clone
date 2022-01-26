@@ -4,18 +4,9 @@ import * as yup from "yup";
 module.exports = {
   validateCreateUser: async (req, res, next) => {
     const schema = yup.object().shape({
-      phoneNumber: yup.number().required(),
       name: yup.string().required(),
-      password: yup.string().required(),
+      email: yup.string().required(),
       profilePic: yup.string(),
-    });
-    await validate(schema, req.body, res, next);
-  },
-
-  validateLogin: async (req, res, next) => {
-    const schema = yup.object().shape({
-      phoneNumber: yup.number().required(),
-      password: yup.string().required(),
     });
     await validate(schema, req.body, res, next);
   },
@@ -26,7 +17,7 @@ module.exports = {
         .array()
         .of(
           yup.object().shape({
-            _id: yup.string().required(),
+            email: yup.string().required(),
             name: yup.string().required(),
             profilePic: yup.string(),
           }),
@@ -38,14 +29,14 @@ module.exports = {
 
   validateGetChannelList: async (req, res, next) => {
     const schema = yup.object().shape({
-      userId: yup.string().required(),
+      email: yup.string().required(),
     });
     await validate(schema, req.query, res, next);
   },
 
   validateSearchUser: async (req, res, next) => {
     const schema = yup.object().shape({
-      phone: yup.number().required(),
+      email: yup.string().required(),
     });
     await validate(schema, req.query, res, next);
   },
@@ -54,8 +45,8 @@ module.exports = {
     const schema = yup.object().shape({
       channelId: yup.string().required(),
       messages: yup.object().shape({
-        senderID: yup.string().required(),
-        message: yup.string().required(),
+        senderEmail: yup.string().required(),
+        text: yup.string().required(),
       }),
     });
     await validate(schema, req.body, res, next);
