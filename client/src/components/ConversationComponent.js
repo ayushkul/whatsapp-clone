@@ -110,6 +110,7 @@ function ConversationComponent(props) {
       const messages = [...messageList];
       const msgReqData = {
         text,
+        receiverEmail: selectedChat.otherUser.email,
         senderEmail: userInfo.email,
         addedOn: new Date().getTime(),
       };
@@ -131,8 +132,8 @@ function ConversationComponent(props) {
         </ProfileInfo>
       </ProfileHeader>
       <MessageContainer>
-        {messageList?.map((messageData) => (
-          <MessageDiv isYours={messageData.senderEmail === userInfo.email}>
+        {messageList?.map((messageData, index) => (
+          <MessageDiv key={index} isYours={messageData.senderEmail === userInfo.email}>
             <Message isYours={messageData.senderEmail === userInfo.email}>
               {[messageData.text]}
             </Message>

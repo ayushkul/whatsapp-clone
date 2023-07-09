@@ -1,6 +1,7 @@
 import UserModel from "../models/user";
 import ChannelModel from "../models/channel";
 import { sendResponse, sendError } from "../../utility";
+import {sendMessage, sendMessageToSocket} from "../manager/socket";
 
 module.exports = {
   createUser: async (req, res) => {
@@ -74,6 +75,7 @@ module.exports = {
       { _id: requestData.channelId },
       { $push: { messages: requestData.messages } }
     );
+    sendMessageToSocket(requestData)
     sendResponse(res, {}, "Message sent successfully", true, 200);
   },
 };

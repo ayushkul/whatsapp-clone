@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import ContactListComponent from "./components/ContactListComponent";
 import ConversationComponent from "./components/ConversationComponent";
+import {io} from "socket.io-client";
 
 const Container = styled.div`
   display: flex;
@@ -33,36 +34,49 @@ const Placeholder = styled.div`
     color: #525252;
   }
 `;
+const WS_BASE_URL = "ws://localhost:3002";
 
 function App(props) {
-  const { userInfo } = props;
-  const [selectedChat, setChat] = useState();
-  const [refreshContactList, toggleRefreshContactList] = useState(false);
+    const {userInfo} = props;
+    const [selectedChat, setChat] = useState();
+    const [refreshContactList, toggleRefreshContactList] = useState(false);
+    useEffect(() => {
+        const socket = io(WS_BASE_URL, {transports: ['websocket'], query: {email: userInfo.email}})
 
-  return (
-    <Container>
-      <ContactListComponent
-        setChat={setChat}
-        userInfo={userInfo}
-        refreshContactList={refreshContactList}
-      />
-      {selectedChat ? (
-        <ConversationComponent
-          selectedChat={selectedChat}
-          userInfo={userInfo}
-          refreshContactList={() =>
-            toggleRefreshContactList(!refreshContactList)
-          }
-        />
-      ) : (
-        <Placeholder>
-          <ChatPlaceholder src="/whatsapp-clone/welcome-placeholder.jpeg" />
-          <span>Keep your phone connected</span>
-          WhatsApp connects to your phone to sync messages.
-        </Placeholder>
-      )}
-    </Container>
-  );
+        // Event listener for the 'message' event
+        socket.on('message', (message) => {
+            // Handle the received message
+            console.log('Received message:', message);
+            // Perform any necessary actions with the received message
+        });
+        return () => {
+            socket.disconnect();
+        };
+    }, [])
+    return (
+        <Container>
+            <ContactListComponent
+                setChat={setChat}
+                userInfo={userInfo}
+                refreshContactList={refreshContactList}
+            />
+            {selectedChat ? (
+                <ConversationComponent
+                    selectedChat={selectedChat}
+                    userInfo={userInfo}
+                    refreshContactList={() =>
+                        toggleRefreshContactList(!refreshContactList)
+                    }
+                />
+            ) : (
+                <Placeholder>
+                    <ChatPlaceholder src="/whatsapp-clone/welcome-placeholder.jpeg"/>
+                    <span>Keep your phone connected</span>
+                    WhatsApp connects to your phone to sync messages.
+                </Placeholder>
+            )}
+        </Container>
+    );
 }
 
 export default App;

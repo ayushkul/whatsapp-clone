@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import httpManager from "../managers/httpManager";
-import { contactList } from "../mockData";
+import {contactList} from "../mockData";
 import utility from "../utility";
 
 const Container = styled.div`
@@ -106,90 +106,91 @@ const SearchResults = styled.div`
 `;
 
 const ContactComponent = (props) => {
-  const { userData, setChat, userInfo } = props;
-  const [searchResult, setSearchResult] = useState();
+    const {userData, setChat, userInfo} = props;
+    const [searchResult, setSearchResult] = useState();
 
-  const otherUser =
-    userData.channelUsers?.find(
-      (userObj) => userObj.email !== userInfo.email
-    ) || userData;
+    const otherUser =
+        userData.channelUsers?.find(
+            (userObj) => userObj.email !== userInfo.email
+        ) || userData;
 
-  const lastMessage =
-    userData.messages && userData.messages.length
-      ? userData.messages[userData.messages.length - 1]
-      : {};
-      
-  return (
-    <ContactItem onClick={() => setChat({ channelData: userData, otherUser })}>
-      <ProfileIcon src={otherUser?.profilePic} />
-      <ContactInfo>
-        <ContactName>{otherUser?.name}</ContactName>
-        <MessageText>{lastMessage?.text}</MessageText>
-      </ContactInfo>
-      <MessageTime>
-        {" "}
-        {lastMessage && new Date(lastMessage?.addedOn).getUTCDate()}
-      </MessageTime>
-    </ContactItem>
-  );
+    const lastMessage =
+        userData.messages && userData.messages.length
+            ? userData.messages[userData.messages.length - 1]
+            : {};
+
+    return (
+        <ContactItem onClick={() => setChat({channelData: userData, otherUser})}>
+            <ProfileIcon src={otherUser?.profilePic}/>
+            <ContactInfo>
+                <ContactName>{otherUser?.name}</ContactName>
+                <MessageText>{lastMessage?.text}</MessageText>
+            </ContactInfo>
+            <MessageTime>
+                {" "}
+                {lastMessage && new Date(lastMessage?.addedOn).getUTCDate()}
+            </MessageTime>
+        </ContactItem>
+    );
 };
 
 function ContactListComponent(props) {
-  const { userInfo, refreshContactList } = props;
-  const [searchString, setSearchString] = useState("");
-  const [searchResult, setSearchResult] = useState("");
-  const [contactList, setContactList] = useState([]);
+    const {userInfo, refreshContactList} = props;
+    const [searchString, setSearchString] = useState("");
+    const [searchResult, setSearchResult] = useState("");
+    const [contactList, setContactList] = useState([]);
 
-  const refreshContacts = async () => {
-    const contactListData = await httpManager.getChannelList(userInfo.email);
-    setContactList(contactListData.data.responseData);
-    setSearchString();
-    setSearchResult();
-  };
+    const refreshContacts = async () => {
+        const contactListData = await httpManager.getChannelList(userInfo.email);
+        setContactList(contactListData.data.responseData);
+        setSearchString();
+        setSearchResult();
+    };
 
-  useEffect(() => {
-    refreshContacts();
-  }, [refreshContactList]);
+    useEffect(() => {
+        refreshContacts();
+    }, [refreshContactList]);
 
-  const onSearchTextChanged = async (searchText) => {
-    setSearchString(searchText);
-    if (!utility.validateEmail(searchText)) return;
+    const onSearchTextChanged = async (searchText) => {
+        setSearchString(searchText);
+        if (!utility.validateEmail(searchText)) return;
 
-    const userData = await httpManager.searchUser(searchText);
-    if (userData.data?.success) setSearchResult(userData.data.responseData);
-  };
+        const userData = await httpManager.searchUser(searchText);
+        if (userData.data?.success) setSearchResult(userData.data.responseData);
+    };
 
-  return (
-    <Container>
-      <ProfileInfoDiv>
-        <ProfileImage
-          src={userInfo.imageUrl || "/whatsapp-clone/profile/theindiandev.jpeg"}
-        />
-      </ProfileInfoDiv>
-      <SearchBox>
-        <SearchContainer>
-          <SearchIcon src={"/whatsapp-clone/search-icon.svg"} />
-          <SearchInput
-            placeholder="Search or start new chat"
-            value={searchString}
-            onChange={(e) => onSearchTextChanged(e.target.value)}
-          />
-        </SearchContainer>
-      </SearchBox>
-      {searchResult && (
-        <SearchResults>
-          <ContactComponent userData={searchResult} setChat={props.setChat} />
-        </SearchResults>
-      )}
-      {contactList.map((userData) => (
-        <ContactComponent
-          userData={userData}
-          setChat={props.setChat}
-          userInfo={userInfo}
-        />
-      ))}
-    </Container>
-  );
+    return (
+        <Container>
+            <ProfileInfoDiv>
+                <ProfileImage
+                    src={userInfo.imageUrl || "/whatsapp-clone/profile/theindiandev.jpeg"}
+                />
+            </ProfileInfoDiv>
+            <SearchBox>
+                <SearchContainer>
+                    <SearchIcon src={"/whatsapp-clone/search-icon.svg"}/>
+                    <SearchInput
+                        placeholder="Search or start new chat"
+                        value={searchString}
+                        onChange={(e) => onSearchTextChanged(e.target.value)}
+                    />
+                </SearchContainer>
+            </SearchBox>
+            {searchResult && (
+                <SearchResults>
+                    <ContactComponent userData={searchResult} setChat={props.setChat}/>
+                </SearchResults>
+            )}
+            {contactList.map((userData, index) => (
+                <ContactComponent
+                    key={index}
+                    userData={userData}
+                    setChat={props.setChat}
+                    userInfo={userInfo}
+                />
+            ))}
+        </Container>
+    );
 }
 
 export default ContactListComponent;
